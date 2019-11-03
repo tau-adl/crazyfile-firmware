@@ -37,9 +37,9 @@
 
 static bool motorSetEnable = false;
 
-static bool enableYaw = true;
-static bool enablePitchRoll = true;
-static bool enableThrust = true;
+static float enableYaw = 1;
+static float enablePitchRoll = 1;
+static float enableThrust = 1;
 
 static struct {
   uint32_t m1;
@@ -116,9 +116,9 @@ void powerDistribution(const control_t *control)
 }
 
 PARAM_GROUP_START(mixerControl)
-PARAM_ADD(PARAM_INT8, yaw, &enableYaw)
-PARAM_ADD(PARAM_INT8, thrust, &enableThrust)
-PARAM_ADD(PARAM_INT8, pitch_roll, &enablePitchRoll)
+PARAM_ADD(PARAM_FLOAT, yaw, &enableYaw)
+PARAM_ADD(PARAM_FLOAT, thrust, &enableThrust)
+PARAM_ADD(PARAM_FLOAT, pitch_roll, &enablePitchRoll)
 PARAM_GROUP_STOP(mixerControl)
 
 PARAM_GROUP_START(motorPowerSet)
