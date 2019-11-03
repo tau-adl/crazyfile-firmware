@@ -37,6 +37,10 @@
 
 static bool motorSetEnable = false;
 
+static bool enableYaw = true;
+static bool enablePitchRoll = true;
+static bool enableThrust = true;
+
 static struct {
   uint32_t m1;
   uint32_t m2;
@@ -85,14 +89,14 @@ void powerDistribution(const control_t *control)
     motorPower.m3 =  limitThrust(control->thrust + r - p + control->yaw);
     motorPower.m4 =  limitThrust(control->thrust + r + p - control->yaw);
   #else // QUAD_FORMATION_NORMAL
-    motorPower.m1 = limitThrust(control->thrust + control->pitch +
-                               control->yaw);
-    motorPower.m2 = limitThrust(control->thrust - control->roll -
-                               control->yaw);
-    motorPower.m3 =  limitThrust(control->thrust - control->pitch +
-                               control->yaw);
-    motorPower.m4 =  limitThrust(control->thrust + control->roll -
-                               control->yaw);
+    motorPower.m1 = limitThrust(control->thrust*enableThrust + control->pitch*enablePitchRoll +
+                               control->yaw*enableYaw);
+    motorPower.m2 = limitThrust(control->thrust*enableThrust - control->roll*enablePitchRoll -
+                               control->yaw*enableYaw);
+    motorPower.m3 =  limitThrust(control->thrust*enableThrust - control->pitch*enablePitchRoll +
+                               control->yaw*enableYaw);
+    motorPower.m4 =  limitThrust(control->thrust*enableThrust + control->roll*enablePitchRoll -
+                               control->yaw*enableYaw);
   #endif
 
   if (motorSetEnable)
@@ -110,6 +114,12 @@ void powerDistribution(const control_t *control)
     motorsSetRatio(MOTOR_M4, motorPower.m4);
   }
 }
+
+PARAM_GROUP_START(mixerControl)
+PARAM_ADD(PARAM_INT8, yaw, &enableYaw)
+PARAM_ADD(PARAM_INT8, thrust, &enableThrust)
+PARAM_ADD(PARAM_INT8, pitch_roll, &enablePitchRoll)
+PARAM_GROUP_STOP(mixerControl)
 
 PARAM_GROUP_START(motorPowerSet)
 PARAM_ADD(PARAM_UINT8, enable, &motorSetEnable)
