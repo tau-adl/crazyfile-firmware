@@ -13,13 +13,13 @@ CFLAGS += $(EXTRA_CFLAGS)
 
 ######### JTAG and environment configuration ##########
 OPENOCD           ?= openocd
-OPENOCD_INTERFACE ?= interface/stlink-v2.cfg
+OPENOCD_INTERFACE ?= interface/stlink-v2-1.cfg
 OPENOCD_CMDS      ?=
 CROSS_COMPILE     ?= arm-none-eabi-
 PYTHON2           ?= python2
 DFU_UTIL          ?= dfu-util
 CLOAD             ?= 1
-DEBUG             ?= 1
+DEBUG             ?= 0
 CLOAD_SCRIPT      ?= python3 -m cfloader
 CLOAD_CMDS        ?=
 CLOAD_ARGS        ?=
