@@ -40,6 +40,7 @@ static bool motorSetEnable = false;
 static float enableYaw = 1;
 static float enablePitchRoll = 1;
 static float enableThrust = 1;
+static bool newMixer = 0;
 
 static struct {
   uint32_t m1;
@@ -82,12 +83,24 @@ void powerStop()
 void powerDistribution(const control_t *control)
 {
   #ifdef QUAD_FORMATION_X
-    int16_t r = control->roll / 2.0f;
-    int16_t p = control->pitch / 2.0f;
-    motorPower.m1 = limitThrust(control->thrust - r + p + control->yaw);
-    motorPower.m2 = limitThrust(control->thrust - r - p - control->yaw);
-    motorPower.m3 =  limitThrust(control->thrust + r - p + control->yaw);
-    motorPower.m4 =  limitThrust(control->thrust + r + p - control->yaw);
+
+	int16_t r = control->roll / 2.0f * enablePitchRoll;
+    int16_t p = control->pitch / 2.0f * enablePitchRoll;
+    motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
+    motorPower.m2 = limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
+    motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
+    motorPower.m4 =  limitThrust((control->thrust * enableThrust) + r + p - (control->yaw * enableYaw));
+
+    if(newMixer) {
+
+		int16_t r = control->roll / 2.0f * enablePitchRoll;
+		int16_t p = control->pitch / 2.0f * enablePitchRoll;
+		motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
+		motorPower.m2 = limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
+		motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
+		motorPower.m4 =  limitThrust((control->thrust * enableThrust) + r + p - (control->yaw * enableYaw));
+    }
+
   #else // QUAD_FORMATION_NORMAL
     motorPower.m1 = limitThrust(control->thrust*enableThrust + control->pitch*enablePitchRoll +
                                control->yaw*enableYaw);
@@ -119,6 +132,7 @@ PARAM_GROUP_START(mixerControl)
 PARAM_ADD(PARAM_FLOAT, yaw, &enableYaw)
 PARAM_ADD(PARAM_FLOAT, thrust, &enableThrust)
 PARAM_ADD(PARAM_FLOAT, pitch_roll, &enablePitchRoll)
+PARAM_ADD(PARAM_UINT8, new_Mixer, &newMixer)
 PARAM_GROUP_STOP(mixerControl)
 
 PARAM_GROUP_START(motorPowerSet)
