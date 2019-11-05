@@ -38,7 +38,8 @@
 static bool motorSetEnable = false;
 
 static float enableYaw = 1;
-static float enablePitchRoll = 1;
+static float enablePitch = 1;
+static float enableRoll = 1;
 static float enableThrust = 1;
 static bool newMixer = 0;
 
@@ -84,8 +85,8 @@ void powerDistribution(const control_t *control)
 {
   #ifdef QUAD_FORMATION_X
 
-	int16_t r = control->roll / 2.0f * enablePitchRoll;
-    int16_t p = control->pitch / 2.0f * enablePitchRoll;
+	int16_t r = control->roll / 2.0f * enableRoll;
+    int16_t p = control->pitch / 2.0f * enablePitch;
     motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
     motorPower.m2 = limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
     motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
@@ -93,8 +94,8 @@ void powerDistribution(const control_t *control)
 
     if(newMixer) {
 
-		int16_t r = control->roll / 2.0f * enablePitchRoll;
-		int16_t p = control->pitch / 2.0f * enablePitchRoll;
+		int16_t r = control->roll / 2.0f * enableRoll;
+		int16_t p = control->pitch / 2.0f * enablePitch;
 		motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
 		motorPower.m2 = limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
 		motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
@@ -102,13 +103,13 @@ void powerDistribution(const control_t *control)
     }
 
   #else // QUAD_FORMATION_NORMAL
-    motorPower.m1 = limitThrust(control->thrust*enableThrust + control->pitch*enablePitchRoll +
+    motorPower.m1 = limitThrust(control->thrust*enableThrust + control->pitch*enablePitch +
                                control->yaw*enableYaw);
-    motorPower.m2 = limitThrust(control->thrust*enableThrust - control->roll*enablePitchRoll -
+    motorPower.m2 = limitThrust(control->thrust*enableThrust - control->roll*enableRoll -
                                control->yaw*enableYaw);
-    motorPower.m3 =  limitThrust(control->thrust*enableThrust - control->pitch*enablePitchRoll +
+    motorPower.m3 =  limitThrust(control->thrust*enableThrust - control->pitch*enablePitch +
                                control->yaw*enableYaw);
-    motorPower.m4 =  limitThrust(control->thrust*enableThrust + control->roll*enablePitchRoll -
+    motorPower.m4 =  limitThrust(control->thrust*enableThrust + control->roll*enableRoll -
                                control->yaw*enableYaw);
   #endif
 
@@ -131,7 +132,8 @@ void powerDistribution(const control_t *control)
 PARAM_GROUP_START(mixerControl)
 PARAM_ADD(PARAM_FLOAT, yaw, &enableYaw)
 PARAM_ADD(PARAM_FLOAT, thrust, &enableThrust)
-PARAM_ADD(PARAM_FLOAT, pitch_roll, &enablePitchRoll)
+PARAM_ADD(PARAM_FLOAT, roll, &enableRoll)
+PARAM_ADD(PARAM_FLOAT, pitch, &enablePitch )
 PARAM_ADD(PARAM_UINT8, new_Mixer, &newMixer)
 PARAM_GROUP_STOP(mixerControl)
 
