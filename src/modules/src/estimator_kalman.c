@@ -153,8 +153,17 @@ static inline bool stateEstimatorHasHeightPacket(heightMeasurement_t *height) {
 static xQueueHandle yawErrorDataQueue;
 #define YAW_ERROR_QUEUE_LENGTH (10)
 
-static inline bool stateEstimatorHasYawErrorPacket(float *error) {
+static inline bool stateEstimatorHasYawErrorPacket(yawErrorMeasurement_t *error)
+{
   return (pdTRUE == xQueueReceive(yawErrorDataQueue, error, 0));
+}
+
+static xQueueHandle sweepAnglesDataQueue;
+#define SWEEP_ANGLES_QUEUE_LENGTH (10)
+
+static inline bool stateEstimatorHasSweepAnglesPacket(sweepAngleMeasurement_t *angles)
+{
+  return (pdTRUE == xQueueReceive(sweepAnglesDataQueue, angles, 0));
 }
 
 // Semaphore to signal that we got data from the stabilzer loop to process
@@ -271,7 +280,8 @@ void estimatorKalmanTaskInit() {
   flowDataQueue = xQueueCreate(FLOW_QUEUE_LENGTH, sizeof(flowMeasurement_t));
   tofDataQueue = xQueueCreate(TOF_QUEUE_LENGTH, sizeof(tofMeasurement_t));
   heightDataQueue = xQueueCreate(HEIGHT_QUEUE_LENGTH, sizeof(heightMeasurement_t));
-  yawErrorDataQueue = xQueueCreate(YAW_ERROR_QUEUE_LENGTH, sizeof(float));
+  yawErrorDataQueue = xQueueCreate(YAW_ERROR_QUEUE_LENGTH, sizeof(yawErrorMeasurement_t));
+  sweepAnglesDataQueue = xQueueCreate(SWEEP_ANGLES_QUEUE_LENGTH, sizeof(sweepAngleMeasurement_t));
 
   vSemaphoreCreateBinary(runTaskSemaphore);
 
@@ -528,7 +538,7 @@ static bool updateQueuedMeasurments(const Axis3f *gyro) {
     doneUpdate = true;
   }
 
-  float yawError = 0.0f;
+  yawErrorMeasurement_t yawError;
   while (stateEstimatorHasYawErrorPacket(&yawError))
   {
     kalmanCoreUpdateWithYawError(&coreData, &yawError);
@@ -574,6 +584,13 @@ static bool updateQueuedMeasurments(const Axis3f *gyro) {
   while (stateEstimatorHasFlowPacket(&flow))
   {
     kalmanCoreUpdateWithFlow(&coreData, &flow, gyro);
+    doneUpdate = true;
+  }
+
+  sweepAngleMeasurement_t angles;
+  while (stateEstimatorHasSweepAnglesPacket(&angles))
+  {
+    kalmanCoreUpdateWithSweepAngles(&coreData, &angles);
     doneUpdate = true;
   }
 
@@ -674,10 +691,16 @@ bool estimatorKalmanEnqueueAbsoluteHeight(const heightMeasurement_t *height)
   return appendMeasurement(heightDataQueue, (void *)height);
 }
 
-bool estimatorKalmanEnqueueYawError(const float error)
+bool estimatorKalmanEnqueueYawError(const yawErrorMeasurement_t* error)
 {
   ASSERT(isInit);
-  return appendMeasurement(yawErrorDataQueue, (void *)&error);
+  return appendMeasurement(yawErrorDataQueue, (void *)error);
+}
+
+bool estimatorKalmanEnqueueSweepAngles(const sweepAngleMeasurement_t *angles)
+{
+  ASSERT(isInit);
+  return appendMeasurement(sweepAnglesDataQueue, (void *)angles);
 }
 
 bool estimatorKalmanTest(void)

@@ -29,6 +29,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "imu_types.h"
+#include "lighthouse_geometry.h"
 
 /* Data structure used by the stabilizer subsystem.
  * All have a timestamp to be set when the data is calculated.
@@ -231,6 +232,23 @@ typedef struct heightMeasurement_s {
   float height;
   float stdDev;
 } heightMeasurement_t;
+
+/** Yaw error measurement */
+typedef struct {
+  uint32_t timestamp;
+  float yawError;
+  float stdDev;
+} yawErrorMeasurement_t;
+
+/** Sweep angle measurement */
+typedef struct {
+  uint32_t timestamp;
+  baseStationGeometry_t geometry;
+  float angleX;
+  float angleY;
+  float stdDevX;
+  float stdDevY;
+} sweepAngleMeasurement_t;
 
 // Frequencies to bo used with the RATE_DO_EXECUTE_HZ macro. Do NOT use an arbitrary number.
 #define RATE_1000_HZ 1000
