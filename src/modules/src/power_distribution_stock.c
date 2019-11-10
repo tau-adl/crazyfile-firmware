@@ -38,8 +38,8 @@
 static bool motorSetEnable = false;
 
 static float enableYaw = 1;
-static float enablePitch = 1;
-static float enableRoll = 1;
+static float enablePitch = 0;
+static float enableRoll = 0;
 static float enableThrust = 1;
 static bool newMixer = 0;
 
