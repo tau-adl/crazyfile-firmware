@@ -49,6 +49,7 @@
 #include "estimator.h"
 #include "usddeck.h"
 #include "quatcompress.h"
+#include "statsCnt.h"
 
 static bool isInit;
 static bool emergencyStop = false;
@@ -74,6 +75,8 @@ typedef enum { configureAcc, measureNoiseFloor, measureProp, testBattery, restar
 #else
   static TestState testState = testDone;
 #endif
+
+static STATS_CNT_RATE_DEFINE(stabilizerRate, 500);
 
 static struct {
   // position - mm
@@ -294,6 +297,7 @@ static void stabilizerTask(void* param)
     }
     calcSensorToOutputLatency(&sensorData);
     tick++;
+    STATS_CNT_RATE_EVENT(&stabilizerRate);
   }
 }
 
@@ -580,6 +584,9 @@ LOG_ADD(LOG_FLOAT, roll, &state.attitude.roll)
 LOG_ADD(LOG_FLOAT, pitch, &state.attitude.pitch)
 LOG_ADD(LOG_FLOAT, yaw, &state.attitude.yaw)
 LOG_ADD(LOG_UINT16, thrust, &control.thrust)
+
+STATS_CNT_RATE_LOG_ADD(rtStab, &stabilizerRate)
+LOG_ADD(LOG_UINT32, intToOut, &inToOutLatency)
 LOG_GROUP_STOP(stabilizer)
 
 LOG_GROUP_START(acc)
@@ -668,8 +675,3 @@ LOG_ADD(LOG_INT16, rateRoll, &stateCompressed.rateRoll)   // angular velocity - 
 LOG_ADD(LOG_INT16, ratePitch, &stateCompressed.ratePitch)
 LOG_ADD(LOG_INT16, rateYaw, &stateCompressed.rateYaw)
 LOG_GROUP_STOP(stateEstimateZ)
-
-LOG_GROUP_START(latency)
-LOG_ADD(LOG_UINT32, intToOut, &inToOutLatency)
-LOG_GROUP_STOP(latency)
-

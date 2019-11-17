@@ -38,6 +38,7 @@
 #include "deck.h"
 #include "log.h"
 #include "param.h"
+#include "statsCnt.h"
 
 #include "config.h"
 #include "FreeRTOS.h"
@@ -112,19 +113,13 @@ static pulseProcessorResult_t angles[PULSE_PROCESSOR_N_SENSORS];
 // Stats
 static bool comSynchronized = false;
 
-static int serialFrameCount = 0;
-static int frameCount = 0;
-static int cycleCount = 0;
-static int positionCount = 0;
-
-static float serialFrameRate = 0.0;
-static float frameRate = 0.0;
-static float cycleRate = 0.0;
-static float positionRate = 0.0;
+static const uint32_t oneSecond = 1000;
+static STATS_CNT_RATE_DEFINE(serialFrameRate, oneSecond);
+static STATS_CNT_RATE_DEFINE(frameRate, oneSecond);
+static STATS_CNT_RATE_DEFINE(cycleRate, oneSecond);
+static STATS_CNT_RATE_DEFINE(positionRate, oneSecond);
 
 static uint16_t pulseWidth[PULSE_PROCESSOR_N_SENSORS];
-
-static uint32_t latestStatsTimeMs = 0;
 
 typedef union frame_u {
   struct {
@@ -148,23 +143,6 @@ static bool getFrame(frame_t *frame)
   return (frame->sync == 0 || (syncCounter==7));
 }
 
-static void resetStats() {
-  serialFrameCount = 0;
-  frameCount = 0;
-  cycleCount = 0;
-  positionCount = 0;
-}
-
-static void calculateStats(uint32_t nowMs) {
-  double time = (nowMs - latestStatsTimeMs) / 1000.0;
-  serialFrameRate = serialFrameCount / time;
-  frameRate = frameCount / time;
-  cycleRate = cycleCount / time;
-  positionRate = positionCount / time;
-
-  resetStats();
-}
-
 static vec3d position;
 static positionMeasurement_t ext_pos;
 static float deltaLog;
@@ -186,7 +164,7 @@ static void estimatePosition(pulseProcessorResult_t angles[]) {
         ext_pos.z += position[2];
         sensorsUsed++;
 
-        positionCount++;
+        STATS_CNT_RATE_EVENT(&positionRate);
       }
   }
 
@@ -342,25 +320,19 @@ static void lighthouseTask(void *param)
         continue;
       }
 
-      serialFrameCount++;
+      STATS_CNT_RATE_EVENT(&serialFrameRate);
 
       pulseWidth[frame.sensor] = frame.width;
 
       if (pulseProcessorProcessPulse(&ppState, frame.sensor, frame.timestamp, frame.width, angles, &basestation, &axis)) {
-        frameCount++;
+        STATS_CNT_RATE_EVENT(&frameRate);
         if (basestation == 1 && axis == 1) {
-          cycleCount++;
+          STATS_CNT_RATE_EVENT(&cycleRate);
 
           pulseProcessorApplyCalibration(&ppState, angles);
           estimatePose(angles);
           pulseProcessorClear(angles);
         }
-      }
-
-      uint32_t nowMs = T2M(xTaskGetTickCount());
-      if ((nowMs - latestStatsTimeMs) > 1000) {
-        calculateStats(nowMs);
-        latestStatsTimeMs = nowMs;
       }
 
       synchronized = getFrame(&frame);
@@ -481,10 +453,10 @@ LOG_ADD(LOG_FLOAT, z, &position[2])
 
 LOG_ADD(LOG_FLOAT, delta, &deltaLog)
 
-LOG_ADD(LOG_FLOAT, serRt, &serialFrameRate)
-LOG_ADD(LOG_FLOAT, frmRt, &frameRate)
-LOG_ADD(LOG_FLOAT, cycleRt, &cycleRate)
-LOG_ADD(LOG_FLOAT, posRt, &positionRate)
+STATS_CNT_RATE_LOG_ADD(serRt, &serialFrameRate)
+STATS_CNT_RATE_LOG_ADD(frmRt, &frameRate)
+STATS_CNT_RATE_LOG_ADD(cycleRt, &cycleRate)
+STATS_CNT_RATE_LOG_ADD(posRt, &positionRate)
 
 LOG_ADD(LOG_UINT16, width0, &pulseWidth[0])
 #if PULSE_PROCESSOR_N_SENSORS > 1
