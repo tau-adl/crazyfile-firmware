@@ -1,0 +1,20 @@
+PID PARAMS TO TUNE Z-AXIS CONTROL:
+
+- PosCtlPid
+	position pid - z (zKp/Ki/Kd)
+	thrustBase
+	thrustMin	
+	zVelMax
+	velMaxOverhead
+- velCtlPid
+	velocity pid - z (vzKp/Ki/Kd)
+
+
+PID PARAMS TO TUNE YAW CONTROL:
+
+- pid_attitude
+	attitude pid - yaw_kp/ki/kd
+- pid_rate
+	rate pid - yaw_kp/ki/kd
+
+attitude_pid_controller.c - PID_YAW_RATE_INTEGRATION_LIMIT (166.7?)
