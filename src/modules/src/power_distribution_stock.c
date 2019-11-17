@@ -97,9 +97,9 @@ void powerDistribution(const control_t *control)
 		int16_t r = control->roll / 2.0f * enableRoll;
 		int16_t p = control->pitch / 2.0f * enablePitch;
 		motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
-		motorPower.m2 = limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
+		motorPower.m2 = 0;  // limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
 		motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
-		motorPower.m4 =  limitThrust((control->thrust * enableThrust) + r + p - (control->yaw * enableYaw));
+		motorPower.m4 = 0;  // limitThrust((control->thrust * enableThrust) + r + p - (control->yaw * enableYaw));
     }
 
   #else // QUAD_FORMATION_NORMAL
