@@ -18,7 +18,7 @@ PLATFORM_DOC=1
 include $(CRAZYFLIE_BASE)/tools/make/platforms/*.mk
 $(info You must provide a platform with 'make PLATFORM=<platform>')
 $(info Available platforms:)
-$(foreach plat,$(platforms_available),$(info - $(plat) :	$(PLATFORM_HELP_$(plat))))
+$(foreach plat,$(platforms_available),$(info - $(plat) : $(PLATFORM_HELP_$(plat))))
 $(info -------------------)
 $(info The platform will be written in 'current_platform.mk' and will be used by)
 $(info default for subsequent calls.)
