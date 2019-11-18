@@ -39,14 +39,14 @@ static platformConfig_t configs[] = {
     .deviceTypeName = "Crazyflie 2.0",
     .sensorImplementation = SensorImplementation_mpu9250_lps25h,
     .physicalLayoutAntennasAreClose = true,
-    .motorMap = motorMapDefaultBrushed, //change cofiguration to new configuration
+    .motorMap = motorMapBlimpModBrushed, //change configuration to new configuration
   },
   {
     .deviceType = "CF21",
     .deviceTypeName = "Crazyflie 2.1",
     .sensorImplementation = SensorImplementation_bmi088_bmp388,
     .physicalLayoutAntennasAreClose = false,
-    .motorMap = motorMapDefaultBrushed, //change cofiguration to new configuration
+    .motorMap = motorMapBlimpModBrushed, //change configuration to new configuration
   }
 };
 

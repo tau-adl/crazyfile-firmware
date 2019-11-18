@@ -545,6 +545,17 @@ const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS] =
 };
 
 /**
+ * Configuration for blimp hardware modification
+ */
+const MotorPerifDef* motorMapBlimpModBrushed[NBR_OF_MOTORS] =
+{
+  &CONN_M1,
+  &CONN_M2,
+  &CONN_M3,
+  &CONN_M4
+};
+
+/**
  * Brushless motors mapped as on the Big-Quad deck
  * M1 -> TX2
  * M2 -> IO3

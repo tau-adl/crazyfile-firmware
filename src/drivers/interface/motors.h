@@ -206,7 +206,7 @@ extern const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS];
 extern const MotorPerifDef* motorMapDefaltConBrushless[NBR_OF_MOTORS];
 extern const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS];
 extern const MotorPerifDef* motorMapBoltBrushless[NBR_OF_MOTORS];
-
+extern const MotorPerifDef* motorMapBlimpModBrushed[NBR_OF_MOTORS];
 /**
  * Test sound tones
  */
