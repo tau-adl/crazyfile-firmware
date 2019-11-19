@@ -237,7 +237,6 @@ static Axis3f gyroSnapshot; // A snpashot of the latest gyro data, used by the t
 static Axis3f accSnapshot; // A snpashot of the latest acc data, used by the task
 
 // Statistics
-//static const uint32_t oneSecond = 1000;
 #define ONE_SECOND 1000
 static STATS_CNT_RATE_DEFINE(updateCounter, ONE_SECOND);
 static STATS_CNT_RATE_DEFINE(predictionCounter, ONE_SECOND);
