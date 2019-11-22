@@ -114,3 +114,9 @@ const MotorPerifDef** platformConfigGetMotorMapping() {
   return active_config->motorMap;
 }
 
+const uint8_t platformConfigGetNumberOfMotors() {
+	return active_config->numberOfMotors;
+}
+
+
+

@@ -40,6 +40,7 @@ static platformConfig_t configs[] = {
     .sensorImplementation = SensorImplementation_mpu9250_lps25h,
     .physicalLayoutAntennasAreClose = true,
     .motorMap = motorMapBlimpModBrushed, //change configuration to new configuration
+	.numberOfMotors = 6,
   },
   {
     .deviceType = "CF21",
@@ -47,6 +48,7 @@ static platformConfig_t configs[] = {
     .sensorImplementation = SensorImplementation_bmi088_bmp388,
     .physicalLayoutAntennasAreClose = false,
     .motorMap = motorMapBlimpModBrushed, //change configuration to new configuration
+	.numberOfMotors = 6,
   }
 };
 

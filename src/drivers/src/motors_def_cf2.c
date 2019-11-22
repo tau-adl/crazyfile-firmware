@@ -345,6 +345,28 @@ static const MotorPerifDef DECK_TX2_TIM5 =
     .preloadConfig = TIM_OC3PreloadConfig,
 };
 
+// Deck TX2, PA2, TIM5_CH3 - for brushed motor
+static const MotorPerifDef DECK_BRUSHED_TX2_TIM5 =
+{
+    .drvType       = BRUSHED,
+    .gpioPerif     = RCC_AHB1Periph_GPIOA,
+    .gpioPort      = GPIOA,
+    .gpioPin       = GPIO_Pin_2,
+    .gpioPinSource = GPIO_PinSource2,
+    .gpioOType     = GPIO_OType_PP,
+    .gpioAF        = GPIO_AF_TIM5,
+    .timPerif      = RCC_APB1Periph_TIM5,
+    .tim           = TIM5,
+    .timPolarity   = TIM_OCPolarity_High,
+    .timDbgStop    = DBGMCU_TIM5_STOP,
+    .timPeriod     = MOTORS_PWM_PERIOD,
+    .timPrescaler  = MOTORS_PWM_PRESCALE,
+    .setCompare    = TIM_SetCompare3,
+    .getCompare    = TIM_GetCapture3,
+    .ocInit        = TIM_OC3Init,
+    .preloadConfig = TIM_OC3PreloadConfig,
+};
+
 // Deck RX2, PA3, TIM2_CH4
 static const MotorPerifDef DECK_RX2_TIM2 =
 {
@@ -383,6 +405,28 @@ static const MotorPerifDef DECK_RX2_TIM5 =
     .timDbgStop    = DBGMCU_TIM5_STOP,
     .timPeriod     = MOTORS_BL_PWM_PERIOD,
     .timPrescaler  = MOTORS_BL_PWM_PRESCALE,
+    .setCompare    = TIM_SetCompare4,
+    .getCompare    = TIM_GetCapture4,
+    .ocInit        = TIM_OC4Init,
+    .preloadConfig = TIM_OC4PreloadConfig,
+};
+
+// Deck RX2, PA3, TIM5_CH4 - for brushed motor
+static const MotorPerifDef DECK_BRUSHED_RX2_TIM5 =
+{
+    .drvType       = BRUSHED,
+    .gpioPerif     = RCC_AHB1Periph_GPIOA,
+    .gpioPort      = GPIOA,
+    .gpioPin       = GPIO_Pin_3,
+    .gpioPinSource = GPIO_PinSource3,
+    .gpioOType     = GPIO_OType_PP,
+    .gpioAF        = GPIO_AF_TIM5,
+    .timPerif      = RCC_APB1Periph_TIM5,
+    .tim           = TIM5,
+    .timPolarity   = TIM_OCPolarity_High,
+    .timDbgStop    = DBGMCU_TIM5_STOP,
+    .timPeriod     = MOTORS_PWM_PERIOD,
+    .timPrescaler  = MOTORS_PWM_PRESCALE,
     .setCompare    = TIM_SetCompare4,
     .getCompare    = TIM_GetCapture4,
     .ocInit        = TIM_OC4Init,
@@ -525,7 +569,7 @@ static const MotorPerifDef DECK_MOSI =
  * Mapping for Tags that don't have motors.
  * Actually same mapping as for CF2 but the pins are not connected.
  */
-const MotorPerifDef* motorMapNoMotors[NBR_OF_MOTORS] =
+const MotorPerifDef* motorMapNoMotors[NBR_OF_MOTORS_QUAD] =
 {
   &CONN_M1,
   &CONN_M2,
@@ -533,10 +577,11 @@ const MotorPerifDef* motorMapNoMotors[NBR_OF_MOTORS] =
   &CONN_M4
 };
 
+
 /**
  * Default brushed mapping to M1-M4 connectors.
  */
-const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS] =
+const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS_QUAD] =
 {
   &CONN_M1,
   &CONN_M2,
@@ -547,12 +592,14 @@ const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS] =
 /**
  * Configuration for blimp hardware modification
  */
-const MotorPerifDef* motorMapBlimpModBrushed[NBR_OF_MOTORS] =
+const MotorPerifDef* motorMapBlimpModBrushed[NBR_OF_MOTORS_BLIMP] =
 {
   &CONN_M1,
   &CONN_M2,
   &CONN_M3,
-  &CONN_M4
+  &CONN_M4,
+  &DECK_BRUSHED_TX2_TIM5,
+  &DECK_BRUSHED_RX2_TIM5,
 };
 
 /**
@@ -562,7 +609,7 @@ const MotorPerifDef* motorMapBlimpModBrushed[NBR_OF_MOTORS] =
  * M3 -> IO2
  * M4 -> RX2
  */
-const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS] =
+const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS_QUAD] =
 {
   &DECK_TX2_TIM2,
   &DECK_IO3,
@@ -573,7 +620,7 @@ const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS] =
 /**
  * Brushless motors mapped to the standard motor connectors with pull-ups (~1K) to VBAT soldered.
  */
-const MotorPerifDef* motorMapDefaltConBrushless[NBR_OF_MOTORS] =
+const MotorPerifDef* motorMapDefaltConBrushless[NBR_OF_MOTORS_QUAD] =
 {
   &CONN_M1_BL_INV,
   &CONN_M2_BL_INV,
@@ -584,7 +631,7 @@ const MotorPerifDef* motorMapDefaltConBrushless[NBR_OF_MOTORS] =
 /**
  * Brushless motors mapped to the Bolt PWM outputs.
  */
-const MotorPerifDef* motorMapBoltBrushless[NBR_OF_MOTORS] =
+const MotorPerifDef* motorMapBoltBrushless[NBR_OF_MOTORS_QUAD] =
 {
   &BOLT_M1_BL,
   &BOLT_M2_BL,

@@ -76,16 +76,18 @@ baseStationEulerAngles_t lighthouseBaseStationAngles[2];
 // Sensor positions on the deck
 #define SENSOR_POS_W (0.015f / 2.0f)
 #define SENSOR_POS_L (0.030f / 2.0f)
+
+
+static bool isInit = false;
+
+#if DISABLE_LIGHTHOUSE_DRIVER == 0
+
 static vec3d sensorDeckPositions[4] = {
     {-SENSOR_POS_L, SENSOR_POS_W, 0.0},
     {-SENSOR_POS_L, -SENSOR_POS_W, 0.0},
     {SENSOR_POS_L, SENSOR_POS_W, 0.0},
     {SENSOR_POS_L, -SENSOR_POS_W, 0.0},
 };
-
-static bool isInit = false;
-
-#if DISABLE_LIGHTHOUSE_DRIVER == 0
 
 #ifndef FORCE_FLASH
 #define FORCE_FLASH false
@@ -499,13 +501,15 @@ LOG_ADD(LOG_UINT16, width3, &pulseWidth[3])
 LOG_ADD(LOG_UINT8, comSync, &comSynchronized)
 LOG_GROUP_STOP(lighthouse)
 
-#endif // DISABLE_LIGHTHOUSE_DRIVER
-
 PARAM_GROUP_START(lh)
 PARAM_ADD(PARAM_INT8, maxs, &maxs)
 PARAM_ADD(PARAM_INT8, oneBs, &oneBs)
 PARAM_ADD(PARAM_FLOAT, std, &std)
 PARAM_GROUP_STOP(lh)
+
+#endif // DISABLE_LIGHTHOUSE_DRIVER
+
+
 
 
 PARAM_GROUP_START(deck)

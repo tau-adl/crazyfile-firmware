@@ -130,10 +130,7 @@ void DONT_DISCARD printHardFault(uint32_t* hardfaultArgs)
   UART_PRINT("DFSR = %x\n", (*((volatile unsigned int *)(0xE000ED30))));
   UART_PRINT("AFSR = %x\n", (*((volatile unsigned int *)(0xE000ED3C))));
 
-  motorsSetRatio(MOTOR_M1, 0);
-  motorsSetRatio(MOTOR_M2, 0);
-  motorsSetRatio(MOTOR_M3, 0);
-  motorsSetRatio(MOTOR_M4, 0);
+  motorsSetAllRatio(0);
 
   ledClearAll();
   ledSet(ERR_LED1, 1);
@@ -149,10 +146,7 @@ void DONT_DISCARD printHardFault(uint32_t* hardfaultArgs)
 void DONT_DISCARD MemManage_Handler(void)
 {
   /* Go to infinite loop when Memory Manage exception occurs */
-  motorsSetRatio(MOTOR_M1, 0);
-  motorsSetRatio(MOTOR_M2, 0);
-  motorsSetRatio(MOTOR_M3, 0);
-  motorsSetRatio(MOTOR_M4, 0);
+  motorsSetAllRatio(0);
 
   ledClearAll();
   ledSet(ERR_LED1, 1);
@@ -169,10 +163,8 @@ void DONT_DISCARD MemManage_Handler(void)
 void DONT_DISCARD BusFault_Handler(void)
 {
   /* Go to infinite loop when Bus Fault exception occurs */
-  motorsSetRatio(MOTOR_M1, 0);
-  motorsSetRatio(MOTOR_M2, 0);
-  motorsSetRatio(MOTOR_M3, 0);
-  motorsSetRatio(MOTOR_M4, 0);
+
+  motorsSetAllRatio(0);
 
   ledClearAll();
   ledSet(ERR_LED1, 1);
@@ -189,10 +181,7 @@ void DONT_DISCARD BusFault_Handler(void)
 void DONT_DISCARD UsageFault_Handler(void)
 {
   /* Go to infinite loop when Usage Fault exception occurs */
-  motorsSetRatio(MOTOR_M1, 0);
-  motorsSetRatio(MOTOR_M2, 0);
-  motorsSetRatio(MOTOR_M3, 0);
-  motorsSetRatio(MOTOR_M4, 0);
+  motorsSetAllRatio(0);
 
   ledClearAll();
   ledSet(ERR_LED1, 1);

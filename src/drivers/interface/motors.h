@@ -98,12 +98,18 @@
   #define MOTORS_BL_POLARITY           TIM_OCPolarity_Low
 #endif
 
+#define MAX_NBR_OF_MOTORS 6 //MAX(NBR_OF_MOTORS_BLIMP,NBR_OF_MOTORS_QUAD)
 #define NBR_OF_MOTORS 4
+#define NBR_OF_MOTORS_BLIMP 6
+#define NBR_OF_MOTORS_QUAD 4
+
 // Motors IDs define
 #define MOTOR_M1  0
 #define MOTOR_M2  1
 #define MOTOR_M3  2
 #define MOTOR_M4  3
+#define MOTOR_M5  4
+#define MOTOR_M6  5
 
 // Test defines
 #define MOTORS_TEST_RATIO         (uint16_t)(0.2*(1<<16))
@@ -201,22 +207,25 @@ typedef struct
 /**
  * Motor mapping configurations
  */
-extern const MotorPerifDef* motorMapNoMotors[NBR_OF_MOTORS];
-extern const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS];
-extern const MotorPerifDef* motorMapDefaltConBrushless[NBR_OF_MOTORS];
-extern const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS];
-extern const MotorPerifDef* motorMapBoltBrushless[NBR_OF_MOTORS];
-extern const MotorPerifDef* motorMapBlimpModBrushed[NBR_OF_MOTORS];
+extern const MotorPerifDef* motorMapNoMotors[NBR_OF_MOTORS_QUAD];
+extern const MotorPerifDef* motorMapDefaultBrushed[NBR_OF_MOTORS_QUAD];
+extern const MotorPerifDef* motorMapDefaltConBrushless[NBR_OF_MOTORS_QUAD];
+extern const MotorPerifDef* motorMapBigQuadDeck[NBR_OF_MOTORS_QUAD];
+extern const MotorPerifDef* motorMapBoltBrushless[NBR_OF_MOTORS_QUAD];
+
+extern const MotorPerifDef* motorMapBlimpModBrushed[NBR_OF_MOTORS_BLIMP];
+
+
 /**
  * Test sound tones
  */
-extern const uint16_t testsound[NBR_OF_MOTORS];
+extern const uint16_t testsound[MAX_NBR_OF_MOTORS];
 /*** Public interface ***/
 
 /**
  * Initialisation. Will set all motors ratio to 0%
  */
-void motorsInit(const MotorPerifDef** motorMapSelect);
+void motorsInit(const MotorPerifDef** motorMapSelect, const uint8_t numberOfMotorsSelect);
 
 /**
  * DeInitialisation. Reset to default
@@ -233,6 +242,11 @@ bool motorsTest(void);
  * Set the PWM ratio of the motor 'id'
  */
 void motorsSetRatio(uint32_t id, uint16_t ratio);
+
+/**
+ * Set all the motors ratio to 0
+ */
+void motorsSetAllRatio(uint16_t ratio);
 
 /**
  * Get the PWM ratio of the motor 'id'. Return -1 if wrong ID.
@@ -254,6 +268,12 @@ void motorsTestTask(void* params);
  *     motorsBeep(false, 0, 0); *
  * */
 void motorsBeep(int id, bool enable, uint16_t frequency, uint16_t ratio);
+
+
+
+uint8_t getNumberOfMotors();
+
+
 
 #endif /* __MOTORS_H__ */
 

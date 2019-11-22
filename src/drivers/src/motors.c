@@ -47,7 +47,7 @@ static uint16_t motorsBLConv16ToBits(uint16_t bits);
 static uint16_t motorsConvBitsTo16(uint16_t bits);
 static uint16_t motorsConv16ToBits(uint16_t bits);
 
-uint32_t motor_ratios[] = {0, 0, 0, 0};
+static uint32_t motor_ratios[MAX_NBR_OF_MOTORS];
 
 void motorsPlayTone(uint16_t frequency, uint16_t duration_msec);
 void motorsPlayMelody(uint16_t *notes);
@@ -56,10 +56,11 @@ void motorsBeep(int id, bool enable, uint16_t frequency, uint16_t ratio);
 #include "motors_def_cf2.c"
 
 const MotorPerifDef** motorMap;  /* Current map configuration */
+static uint8_t numberOfMotors;
 
-const uint32_t MOTORS[] = { MOTOR_M1, MOTOR_M2, MOTOR_M3, MOTOR_M4 };
+const uint32_t MOTORS[] = { MOTOR_M1, MOTOR_M2, MOTOR_M3, MOTOR_M4, MOTOR_M5, MOTOR_M6 };
 
-const uint16_t testsound[NBR_OF_MOTORS] = {A4, A5, F5, D5 };
+const uint16_t testsound[MAX_NBR_OF_MOTORS] = {A4, A5, F5, D5, A4, A5 };
 
 static bool isInit = false;
 
@@ -88,7 +89,7 @@ static uint16_t motorsConv16ToBits(uint16_t bits)
 /* Public functions */
 
 //Initialization. Will set all motors ratio to 0%
-void motorsInit(const MotorPerifDef** motorMapSelect)
+void motorsInit(const MotorPerifDef** motorMapSelect, const uint8_t numberOfMotorsSelect)
 {
   int i;
   //Init structures
@@ -102,11 +103,12 @@ void motorsInit(const MotorPerifDef** motorMapSelect)
     return;
   }
 
+  numberOfMotors = numberOfMotorsSelect;
   motorMap = motorMapSelect;
 
   DEBUG_PRINT("Using %s motor driver\n", motorMap[0]->drvType == BRUSHED ? "brushed" : "brushless");
 
-  for (i = 0; i < NBR_OF_MOTORS; i++)
+  for (i = 0; i < numberOfMotors; i++)
   {
     //Clock the gpio and the timers
     MOTORS_RCC_GPIO_CMD(motorMap[i]->gpioPerif, ENABLE);
@@ -161,11 +163,14 @@ void motorsInit(const MotorPerifDef** motorMapSelect)
   }
 
   // Start the timers
-  for (i = 0; i < NBR_OF_MOTORS; i++)
+  for (i = 0; i < numberOfMotors; i++)
   {
     TIM_Cmd(motorMap[i]->tim, ENABLE);
   }
-
+  for (i = 0; i < numberOfMotors; i++)
+    {
+     motor_ratios[i] = 0;
+    }
 
 
   isInit = true;
@@ -176,7 +181,7 @@ void motorsDeInit(const MotorPerifDef** motorMapSelect)
   int i;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  for (i = 0; i < NBR_OF_MOTORS; i++)
+  for (i = 0; i < numberOfMotors; i++)
   {
     // Configure default
     GPIO_StructInit(&GPIO_InitStructure);
@@ -195,7 +200,7 @@ bool motorsTest(void)
 {
   int i;
 
-  for (i = 0; i < sizeof(MOTORS) / sizeof(*MOTORS); i++)
+  for (i = 0; i < numberOfMotors ; i++)
   {
     if (motorMap[i]->drvType == BRUSHED)
     {
@@ -222,7 +227,7 @@ void motorsSetRatio(uint32_t id, uint16_t ithrust)
   if (isInit) {
     uint16_t ratio;
 
-    ASSERT(id < NBR_OF_MOTORS);
+    ASSERT(id < numberOfMotors);
 
     ratio = ithrust;
 
@@ -250,11 +255,20 @@ void motorsSetRatio(uint32_t id, uint16_t ithrust)
   }
 }
 
+/**
+ * sets all motor to specified value (primarily for stop etc..) - this is NumberOfMotors Aware.
+ */
+void motorsSetAllRatio(uint16_t ratio) {
+	for(int i=0; i < numberOfMotors; i++) {
+		motorsSetRatio(i, ratio);
+	}
+}
+
 int motorsGetRatio(uint32_t id)
 {
   int ratio;
 
-  ASSERT(id < NBR_OF_MOTORS);
+  ASSERT(id < numberOfMotors);
   if (motorMap[id]->drvType == BRUSHLESS)
   {
     ratio = motorsBLConvBitsTo16(motorMap[id]->getCompare(motorMap[id]->tim));
@@ -271,7 +285,7 @@ void motorsBeep(int id, bool enable, uint16_t frequency, uint16_t ratio)
 {
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 
-  ASSERT(id < NBR_OF_MOTORS);
+  ASSERT(id < numberOfMotors);
 
   TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
 
@@ -291,19 +305,20 @@ void motorsBeep(int id, bool enable, uint16_t frequency, uint16_t ratio)
   motorMap[id]->setCompare(motorMap[id]->tim, ratio);
 }
 
+uint8_t getNumberOfMotors() {
+	return numberOfMotors;
+}
 
 // Play a tone with a given frequency and a specific duration in milliseconds (ms)
 void motorsPlayTone(uint16_t frequency, uint16_t duration_msec)
 {
-  motorsBeep(MOTOR_M1, true, frequency, (uint16_t)(MOTORS_TIM_BEEP_CLK_FREQ / frequency)/ 20);
-  motorsBeep(MOTOR_M2, true, frequency, (uint16_t)(MOTORS_TIM_BEEP_CLK_FREQ / frequency)/ 20);
-  motorsBeep(MOTOR_M3, true, frequency, (uint16_t)(MOTORS_TIM_BEEP_CLK_FREQ / frequency)/ 20);
-  motorsBeep(MOTOR_M4, true, frequency, (uint16_t)(MOTORS_TIM_BEEP_CLK_FREQ / frequency)/ 20);
-  vTaskDelay(M2T(duration_msec));
-  motorsBeep(MOTOR_M1, false, frequency, 0);
-  motorsBeep(MOTOR_M2, false, frequency, 0);
-  motorsBeep(MOTOR_M3, false, frequency, 0);
-  motorsBeep(MOTOR_M4, false, frequency, 0);
+	for (int i = 0; i < numberOfMotors; i++) {\
+		motorsBeep(MOTORS[i], true, frequency, (uint16_t)(MOTORS_TIM_BEEP_CLK_FREQ / frequency)/ 20);
+	}
+	vTaskDelay(M2T(duration_msec));
+	for (int i = 0; i < numberOfMotors; i++) {\
+		motorsBeep(MOTORS[i], false, frequency, 0);
+	}
 }
 
 // Plays a melody from a note array
@@ -325,4 +340,6 @@ LOG_ADD(LOG_UINT32, m1_pwm, &motor_ratios[0])
 LOG_ADD(LOG_UINT32, m2_pwm, &motor_ratios[1])
 LOG_ADD(LOG_UINT32, m3_pwm, &motor_ratios[2])
 LOG_ADD(LOG_UINT32, m4_pwm, &motor_ratios[3])
+LOG_ADD(LOG_UINT32, m5_pwm, &motor_ratios[4])
+LOG_ADD(LOG_UINT32, m6_pwm, &motor_ratios[5])
 LOG_GROUP_STOP(pwm)

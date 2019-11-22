@@ -59,7 +59,7 @@ static struct {
 
 void powerDistributionInit(void)
 {
-  motorsInit(platformConfigGetMotorMapping());
+  motorsInit(platformConfigGetMotorMapping(),platformConfigGetNumberOfMotors());
 }
 
 bool powerDistributionTest(void)
@@ -75,10 +75,7 @@ bool powerDistributionTest(void)
 
 void powerStop()
 {
-  motorsSetRatio(MOTOR_M1, 0);
-  motorsSetRatio(MOTOR_M2, 0);
-  motorsSetRatio(MOTOR_M3, 0);
-  motorsSetRatio(MOTOR_M4, 0);
+	motorsSetAllRatio(0);
 }
 
 void powerDistribution(const control_t *control)
