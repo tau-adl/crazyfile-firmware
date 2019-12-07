@@ -89,6 +89,10 @@ void controllerPid(control_t *control, setpoint_t *setpoint,
                                         &control->pitch,
                                         &control->yaw);
 
+    // bypass the attitude + rate controllers. feeds desired pitch/roll (output of velocity controller) to actuators.
+    control->pitch = attitudeDesired.pitch;
+    control->roll  = attitudeDesired.roll;
+
     control->yaw = -control->yaw;
   }
 

@@ -37,17 +37,19 @@
 
 static bool motorSetEnable = false;
 
-static float enableYaw = 1;
+static float enableYaw = 0;
 static float enablePitch = 0;
 static float enableRoll = 0;
 static float enableThrust = 1;
-static bool newMixer = 0;
+static bool newMixer = 1;
 
 static struct {
   uint32_t m1;
   uint32_t m2;
   uint32_t m3;
   uint32_t m4;
+  uint32_t m5;
+  uint32_t m6;
 } motorPower;
 
 static struct {
@@ -84,6 +86,7 @@ void powerDistribution(const control_t *control)
 
 	int16_t r = control->roll / 2.0f * enableRoll;
     int16_t p = control->pitch / 2.0f * enablePitch;
+    int16_t y = control->yaw * enableYaw;
     motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
     motorPower.m2 = limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
     motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
@@ -91,12 +94,14 @@ void powerDistribution(const control_t *control)
 
     if(newMixer) {
 
-		int16_t r = control->roll / 2.0f * enableRoll;
-		int16_t p = control->pitch / 2.0f * enablePitch;
-		motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
-		motorPower.m2 = 0;  // limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
-		motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
-		motorPower.m4 = 0;  // limitThrust((control->thrust * enableThrust) + r + p - (control->yaw * enableYaw));
+		//int16_t r = control->roll / 2.0f * enableRoll;
+		//int16_t p = control->pitch / 2.0f * enablePitch;
+		motorPower.m1 = r + p + y;
+		motorPower.m2 = r - p - y;
+		motorPower.m5 = limitThrust((control->thrust * enableThrust));
+		motorPower.m6 = limitThrust((control->thrust * enableThrust));
+		motorPower.m3 = limitThrust((control->thrust * enableThrust)); // -r - p + y
+		motorPower.m4 = limitThrust((control->thrust * enableThrust)); // -r + p - y
     }
 
   #else // QUAD_FORMATION_NORMAL
@@ -123,6 +128,8 @@ void powerDistribution(const control_t *control)
     motorsSetRatio(MOTOR_M2, motorPower.m2);
     motorsSetRatio(MOTOR_M3, motorPower.m3);
     motorsSetRatio(MOTOR_M4, motorPower.m4);
+    motorsSetRatio(MOTOR_M5, motorPower.m5);
+    motorsSetRatio(MOTOR_M6, motorPower.m6);
   }
 }
 

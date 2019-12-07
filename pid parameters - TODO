@@ -1,3 +1,11 @@
+PID Z-Axis Calibration:
+	1. diable all control - find thrust bast for hover
+	2. adjust Z-vel control Kp,Ki,Kd
+	3. adjust Z-pos control Kp,Kd
+
+
+
+
 PID PARAMS TO TUNE Z-AXIS CONTROL:
 
 - PosCtlPid
