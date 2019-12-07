@@ -96,8 +96,8 @@ void powerDistribution(const control_t *control)
 
 		//int16_t r = control->roll / 2.0f * enableRoll;
 		//int16_t p = control->pitch / 2.0f * enablePitch;
-		motorPower.m1 = r + p + y;
-		motorPower.m2 = r - p - y;
+		motorPower.m1 = limitThrust(r + p + y);
+		motorPower.m2 = limitThrust(r - p - y);
 		motorPower.m5 = limitThrust((control->thrust * enableThrust));
 		motorPower.m6 = limitThrust((control->thrust * enableThrust));
 		motorPower.m3 = limitThrust((control->thrust * enableThrust)); // -r - p + y
