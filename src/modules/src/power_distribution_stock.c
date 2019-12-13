@@ -57,6 +57,8 @@ static struct {
   uint16_t m2;
   uint16_t m3;
   uint16_t m4;
+  uint32_t m5;
+  uint32_t m6;
 } motorPowerSet;
 
 void powerDistributionInit(void)
@@ -121,6 +123,8 @@ void powerDistribution(const control_t *control)
     motorsSetRatio(MOTOR_M2, motorPowerSet.m2);
     motorsSetRatio(MOTOR_M3, motorPowerSet.m3);
     motorsSetRatio(MOTOR_M4, motorPowerSet.m4);
+    motorsSetRatio(MOTOR_M5, motorPowerSet.m5);
+    motorsSetRatio(MOTOR_M6, motorPowerSet.m6);
   }
   else
   {
@@ -147,6 +151,8 @@ PARAM_ADD(PARAM_UINT16, m1, &motorPowerSet.m1)
 PARAM_ADD(PARAM_UINT16, m2, &motorPowerSet.m2)
 PARAM_ADD(PARAM_UINT16, m3, &motorPowerSet.m3)
 PARAM_ADD(PARAM_UINT16, m4, &motorPowerSet.m4)
+PARAM_ADD(PARAM_UINT16, m3, &motorPowerSet.m5)
+PARAM_ADD(PARAM_UINT16, m4, &motorPowerSet.m6)
 PARAM_GROUP_STOP(ring)
 
 LOG_GROUP_START(motor)
@@ -154,4 +160,6 @@ LOG_ADD(LOG_INT32, m4, &motorPower.m4)
 LOG_ADD(LOG_INT32, m1, &motorPower.m1)
 LOG_ADD(LOG_INT32, m2, &motorPower.m2)
 LOG_ADD(LOG_INT32, m3, &motorPower.m3)
+LOG_ADD(LOG_INT32, m2, &motorPower.m5)
+LOG_ADD(LOG_INT32, m3, &motorPower.m6)
 LOG_GROUP_STOP(motor)
