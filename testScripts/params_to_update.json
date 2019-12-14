@@ -1,0 +1,10 @@
+{
+	"posCtlPid.thrustBase" : "35000",
+	"posCtlPid.thrustMin"  : "0",
+	"mixerControl.new_Mixer": "1",	
+	"mixerControl.yaw": "0",
+	"mixerControl.roll": "0",
+	"mixerControl.pitch": "0",
+	"mixerControl.thrust": "1"
+}
+
