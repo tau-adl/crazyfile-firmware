@@ -31,3 +31,5 @@ current_platform.mk
 docs/.jekyll-cache
 
 testScripts/cache/
+
+testScripts/params.json
