@@ -70,9 +70,22 @@ def update_parameters(scf,data):
     print('------------------------------- parameters updated on request--------------------------------')
     print('\n\n')
      
-    for key in sorted(data.keys()):                    
-        cf.param.set_value(key, data[key])        
-        
+    for key in sorted(data.keys()):
+        key_split = key.split(".")
+        if len(key_split) is not 2:
+            print('Format error! no in correct format : ' + key)
+            break
+        if key_split[0] in p_toc.keys():
+            if key_split[1] in p_toc[key_split[0]].keys():
+                if p_toc[key_split[0]][key_split[1]].access is 0:
+                    cf.param.set_value(key, data[key])
+            else:
+                print('No such param in TOC: ' + key)
+                break
+        else:
+            print('No such param in TOC: ' + key)
+            break
+            
     time.sleep(2)   
         
 if __name__ == '__main__':
