@@ -1,10 +1,53 @@
-{
-	"posCtlPid.thrustBase" : "35000",
-	"posCtlPid.thrustMin"  : "0",
-	"mixerControl.new_Mixer": "1",	
-	"mixerControl.yaw": "0",
-	"mixerControl.roll": "0",
-	"mixerControl.pitch": "0",
-	"mixerControl.thrust": "1"
-}
+{ 
+ "mixerControl.new_Mixer": "1",
+ "mixerControl.pitch": "1",
+ "mixerControl.roll": "1",
+ "mixerControl.thrust": "1.0",
+ "mixerControl.yaw": "1",
 
+
+ "posCtlPid.thrustBase": "20000",
+ "posCtlPid.thrustMin": "0",
+ "posCtlPid.zKd": "0.6000000238418579",
+ "posCtlPid.zKi": "0.10000000149011612",
+ "posCtlPid.zKp": "1.2999999523162842",
+ "velCtlPid.vzKd": "1.0",
+ "velCtlPid.vzKi": "1.0",
+ "velCtlPid.vzKp": "20.0",
+
+
+
+ "pid_rate.yaw_kd": "10.0",
+ "pid_rate.yaw_ki": "16.700000762939453",
+ "pid_rate.yaw_kp": "400.0",
+
+ "pid_attitude.yaw_kp": "2.5",
+ "pid_attitude.yaw_ki": "0",
+ "pid_attitude.yaw_kd": "0.1",
+
+
+
+"posCtlPid.xKp": "1.75",
+"posCtlPid.xKd": "0.0",
+"posCtlPid.xKi": "0.0",
+
+"posCtlPid.yKp": "1.75",
+"posCtlPid.yKd": "0.0",
+"posCtlPid.yKi": "0.0",
+
+"posCtlPid.rpLimit": "30000",
+"posCtlPid.xyVelMax": "1",
+
+
+
+"velCtlPid.vxKi": "10.0",
+"velCtlPid.vxKd": "0.0",
+"velCtlPid.vxKp": "50000.0",
+
+"velCtlPid.vyKi": "10.0",
+"velCtlPid.vyKp": "50000.0",
+"velCtlPid.vyKd": "0.0"
+
+
+
+}
