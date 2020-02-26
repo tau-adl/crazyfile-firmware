@@ -101,7 +101,8 @@ def log_callback(timestamp, data, logconf):
         print('battery is at {} volts'.format(data['pm.vbat']))
     if 'pm.state' in data:
         # print('battery state is "' + bat_states[data['pm.state']] +'"')
-        if data['pm.state'] >= 3:
+	# shutdown when bat is dead
+        if data['pm.state'] > 3:
             _scf.cf.high_level_commander.stop()
     
 def start_stats_printing(scf):
@@ -127,7 +128,7 @@ if __name__ == '__main__':
         reset_estimator(scf)        
         activate_high_level_commander(scf.cf)
         start_stats_printing(scf)
-        scf.cf.high_level_commander.takeoff(0.5,3)
+        scf.cf.high_level_commander.takeoff(1,3)
         _scf = scf
         input("Press Enter to stop test\n")
                 
