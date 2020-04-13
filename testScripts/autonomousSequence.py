@@ -141,12 +141,14 @@ if __name__ == '__main__':
     with SyncCrazyflie(uri, cf=Crazyflie(rw_cache='./cache')) as scf:
         reset_estimator(scf)        
         activate_high_level_commander(scf.cf)
+        param_tuning = 'posCtlPid.thrustBase'
         #start_position_printing(scf)
         #run_sequence(scf, sequence)
-        scf.cf.high_level_commander.takeoff(0.5,3)
-        
-        input("Press Enter to stop test")
-        
+        scf.cf.high_level_commander.takeoff(1,3)
+        request = input("what next? (q to stop) \n")
+        while request is not "q":            
+            scf.cf.param.set_value(param_tuning, request)
+            request = input("what next? (q to stop) \n")
         scf.cf.high_level_commander.stop()
         disable_high_level_commander(scf.cf)
         time.sleep(1)

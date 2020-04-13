@@ -128,7 +128,7 @@ if __name__ == '__main__':
         reset_estimator(scf)        
         activate_high_level_commander(scf.cf)
         start_stats_printing(scf)
-        scf.cf.high_level_commander.takeoff(1,3)
+        scf.cf.high_level_commander.takeoff(0.75,3)
         _scf = scf
         input("Press Enter to stop test\n")
                 
