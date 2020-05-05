@@ -86,9 +86,9 @@ void powerDistribution(const control_t *control)
 {
   #ifdef QUAD_FORMATION_X
 
-	int16_t r = control->roll / 2.0f * enableRoll;
-    int16_t p = control->pitch / 2.0f * enablePitch;
-    int16_t y = control->yaw * enableYaw;
+	float r = control->roll / 2.0f * enableRoll;
+	float p = control->pitch / 2.0f * enablePitch;
+	float y = control->yaw * enableYaw;
     motorPower.m1 = limitThrust((control->thrust * enableThrust) - r + p + (control->yaw * enableYaw));
     motorPower.m2 = limitThrust((control->thrust * enableThrust) - r - p - (control->yaw * enableYaw));
     motorPower.m3 =  limitThrust((control->thrust * enableThrust) + r - p + (control->yaw * enableYaw));
@@ -102,8 +102,8 @@ void powerDistribution(const control_t *control)
 		motorPower.m2 = limitThrust(r - p - y);
 		motorPower.m5 = limitThrust((control->thrust * enableThrust));
 		motorPower.m6 = limitThrust((control->thrust * enableThrust));
-		motorPower.m3 = limitThrust((control->thrust * enableThrust)); // -r - p + y
-		motorPower.m4 = limitThrust((control->thrust * enableThrust)); // -r + p - y
+		motorPower.m3 = limitThrust(-r - p + y); // -r - p + y
+		motorPower.m4 = limitThrust(-r + p - y); // -r + p - y
     }
 
   #else // QUAD_FORMATION_NORMAL
@@ -151,8 +151,8 @@ PARAM_ADD(PARAM_UINT16, m1, &motorPowerSet.m1)
 PARAM_ADD(PARAM_UINT16, m2, &motorPowerSet.m2)
 PARAM_ADD(PARAM_UINT16, m3, &motorPowerSet.m3)
 PARAM_ADD(PARAM_UINT16, m4, &motorPowerSet.m4)
-PARAM_ADD(PARAM_UINT16, m3, &motorPowerSet.m5)
-PARAM_ADD(PARAM_UINT16, m4, &motorPowerSet.m6)
+PARAM_ADD(PARAM_UINT16, m5, &motorPowerSet.m5)
+PARAM_ADD(PARAM_UINT16, m6, &motorPowerSet.m6)
 PARAM_GROUP_STOP(ring)
 
 LOG_GROUP_START(motor)
@@ -160,6 +160,6 @@ LOG_ADD(LOG_INT32, m4, &motorPower.m4)
 LOG_ADD(LOG_INT32, m1, &motorPower.m1)
 LOG_ADD(LOG_INT32, m2, &motorPower.m2)
 LOG_ADD(LOG_INT32, m3, &motorPower.m3)
-LOG_ADD(LOG_INT32, m2, &motorPower.m5)
-LOG_ADD(LOG_INT32, m3, &motorPower.m6)
+LOG_ADD(LOG_INT32, m5, &motorPower.m5)
+LOG_ADD(LOG_INT32, m6, &motorPower.m6)
 LOG_GROUP_STOP(motor)
