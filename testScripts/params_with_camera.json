@@ -8,12 +8,12 @@
 
  "posCtlPid.thrustBase": "19000",
  "posCtlPid.thrustMin": "0",
- "posCtlPid.zKd": "0.5000000238418579",
+ "posCtlPid.zKd": "0.7000000238418579",
  "posCtlPid.zKi": "0.10000000149011612",
- "posCtlPid.zKp": "1.2999999523162842",
- "velCtlPid.vzKd": "0.8",
+ "posCtlPid.zKp": "1.15",
+ "velCtlPid.vzKd": "1",
  "velCtlPid.vzKi": "1.0",
- "velCtlPid.vzKp": "20.0",
+ "velCtlPid.vzKp": "16.0",
 
 
  "pid_rate.yaw_kd": "10.0",

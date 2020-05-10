@@ -44,12 +44,12 @@ static float enableThrust = 1;
 static bool newMixer = 1;
 
 static struct {
-  uint32_t m1;
-  uint32_t m2;
-  uint32_t m3;
-  uint32_t m4;
-  uint32_t m5;
-  uint32_t m6;
+  uint16_t m1;
+  uint16_t m2;
+  uint16_t m3;
+  uint16_t m4;
+  uint16_t m5;
+  uint16_t m6;
 } motorPower;
 
 static struct {
@@ -57,8 +57,8 @@ static struct {
   uint16_t m2;
   uint16_t m3;
   uint16_t m4;
-  uint32_t m5;
-  uint32_t m6;
+  uint16_t m5;
+  uint16_t m6;
 } motorPowerSet;
 
 void powerDistributionInit(void)
@@ -156,10 +156,10 @@ PARAM_ADD(PARAM_UINT16, m6, &motorPowerSet.m6)
 PARAM_GROUP_STOP(ring)
 
 LOG_GROUP_START(motor)
-LOG_ADD(LOG_INT32, m4, &motorPower.m4)
-LOG_ADD(LOG_INT32, m1, &motorPower.m1)
-LOG_ADD(LOG_INT32, m2, &motorPower.m2)
-LOG_ADD(LOG_INT32, m3, &motorPower.m3)
-LOG_ADD(LOG_INT32, m5, &motorPower.m5)
-LOG_ADD(LOG_INT32, m6, &motorPower.m6)
+LOG_ADD(LOG_UINT16, m4, &motorPower.m4)
+LOG_ADD(LOG_UINT16, m1, &motorPower.m1)
+LOG_ADD(LOG_UINT16, m2, &motorPower.m2)
+LOG_ADD(LOG_UINT16, m3, &motorPower.m3)
+LOG_ADD(LOG_UINT16, m5, &motorPower.m5)
+LOG_ADD(LOG_UINT16, m6, &motorPower.m6)
 LOG_GROUP_STOP(motor)
